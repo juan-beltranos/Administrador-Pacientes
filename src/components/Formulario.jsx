@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { Error } from "./Error"
 import { generarId } from '../helpers/generarId.js'
 
-export const Formulario = ({ pacientes, setPacientes, paciente }) => {
+export const Formulario = ({ pacientes, setPacientes, paciente, setPaciente }) => {
 
   const [nombre, setNombre] = useState('')
   const [propietario, setPropietario] = useState('')
@@ -34,10 +34,19 @@ export const Formulario = ({ pacientes, setPacientes, paciente }) => {
     setError(false)
 
     // objeto paciente
-    const objPaciente = { nombre, propietario, email, fecha, sintomas, id: generarId() }
+    const objPaciente = { nombre, propietario, email, fecha, sintomas }
 
-    // Copia del objeto + nuevo paciente
-    setPacientes([...pacientes, objPaciente])
+    if (paciente.id) {
+      //Editando registro
+      objPaciente.id = paciente.id
+      const pacientesActualizados = pacientes.map(pacienteState => pacienteState.id === paciente.id ? objPaciente : pacienteState);
+      setPacientes(pacientesActualizados)
+      setPaciente({})
+    } else {
+      // Nuevo Registro : Copia del objeto + nuevo paciente
+      objPaciente.id = generarId()
+      setPacientes([...pacientes, objPaciente])
+    }
 
     // Reiniciar formulario
     setNombre('')
